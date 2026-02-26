@@ -3,6 +3,7 @@ import express from "express";
 import Booking from "../models/Booking.js";
 import Seat from "../models/Seat.js";
 import User from "../models/User.js";
+import SeatOverride from "../models/SeatOverride.js";
 import authMiddleware from "../middleware/auth.js";
 import {
   parseDateInput,
@@ -65,8 +66,11 @@ router.post("/", async (req, res, next) => {
       return res.status(404).json({ message: "Seat not found" });
     }
 
+    const override = await SeatOverride.findOne({ seat: seatId, date });
+    const effectiveType = override ? override.type : seat.type;
+
     const allowedType = getAllowedSeatType(user, parsedDate);
-    if (seat.type !== allowedType) {
+    if (effectiveType !== allowedType) {
       return res.status(400).json({ message: `Seat not allowed for ${date}` });
     }
 
@@ -101,6 +105,15 @@ router.delete("/:id", async (req, res, next) => {
     const bookingDate = parseDateInput(booking.date);
     if (!canCancelBooking(bookingDate)) {
       return res.status(400).json({ message: "Cannot cancel on or after booking date" });
+    }
+
+    const seat = await Seat.findById(booking.seat);
+    if (seat && seat.type === "regular") {
+      await SeatOverride.updateOne(
+        { seat: seat._id, date: booking.date },
+        { $set: { type: "flex" } },
+        { upsert: true }
+      );
     }
 
     await Booking.deleteOne({ _id: id });

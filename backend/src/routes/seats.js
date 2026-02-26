@@ -3,6 +3,7 @@ import express from "express";
 import Seat from "../models/Seat.js";
 import Booking from "../models/Booking.js";
 import User from "../models/User.js";
+import SeatOverride from "../models/SeatOverride.js";
 import authMiddleware from "../middleware/auth.js";
 import {
   parseDateInput,
@@ -36,6 +37,10 @@ router.get("/", async (req, res, next) => {
 
     const bookings = await Booking.find({ date }).select("seat");
     const bookedSeatIds = new Set(bookings.map((booking) => booking.seat.toString()));
+    const overrides = await SeatOverride.find({ date }).select("seat type");
+    const overrideMap = new Map(
+      overrides.map((override) => [override.seat.toString(), override.type])
+    );
 
     const user = await User.findById(req.user.id);
     if (!user) {
@@ -47,9 +52,13 @@ router.get("/", async (req, res, next) => {
 
     const result = seats.map((seat) => {
       const isBooked = bookedSeatIds.has(seat._id.toString());
-      const isAllowed = allowedType ? seat.type === allowedType && windowOpen : true;
+      const overrideType = overrideMap.get(seat._id.toString());
+      const effectiveType = overrideType || seat.type;
+      const isAllowed = allowedType ? effectiveType === allowedType && windowOpen : true;
       return {
         ...seat.toObject(),
+        type: effectiveType,
+        baseType: seat.type,
         isBooked,
         isAllowed,
       };
