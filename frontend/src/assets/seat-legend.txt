@@ -1,0 +1,3 @@
+Seat legend notes for designers.
+Regular seats are the default batch seats.
+Flex seats are allowed only when not on a batch day.
