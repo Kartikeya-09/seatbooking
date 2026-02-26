@@ -39,14 +39,14 @@ const Landing = () => {
               Smart seat booking for squads and batches.
             </h2>
             <p className="mt-4 text-base text-slate-600">
-              Plan 50 desks, balance two batch schedules, and keep flex requests in
-              motion. SeatFlow shows exactly who can book which seats every day.
+              Plan 50 desks, balance two batch schedules, and keep floater requests
+              in motion. SeatFlow shows exactly who can book which seats every day.
             </p>
             <div className="mt-8 grid gap-4 sm:grid-cols-3">
               {[
                 { label: "Total seats", value: "50" },
                 { label: "Batch seats", value: "40" },
-                { label: "Flex seats", value: "10" },
+                { label: "Floater seats", value: "10" },
               ].map((item) => (
                 <div
                   key={item.label}
@@ -69,7 +69,7 @@ const Landing = () => {
             <h3 className="mt-4 text-2xl font-semibold">Daily access</h3>
             <p className="mt-3 text-sm text-amber-200">
               Batch day users can book from 40 regular seats. Non-batch days
-              unlock the 10 flex seats for tomorrow.
+              unlock the 10 floater seats for tomorrow.
             </p>
             <div className="mt-6 space-y-3 text-sm">
               <div className="rounded-2xl border border-amber-200/20 bg-white/5 px-4 py-3">
@@ -77,7 +77,7 @@ const Landing = () => {
                 <p className="text-lg font-semibold">Book today + next 14 days</p>
               </div>
               <div className="rounded-2xl border border-amber-200/20 bg-white/5 px-4 py-3">
-                <p className="text-xs uppercase tracking-wide text-amber-200">Flex</p>
+                <p className="text-xs uppercase tracking-wide text-amber-200">Floater</p>
                 <p className="text-lg font-semibold">Tomorrow only</p>
               </div>
             </div>

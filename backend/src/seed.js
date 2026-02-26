@@ -33,7 +33,7 @@ const seed = async () => {
   await Seat.insertMany(
     Array.from({ length: 50 }, (_, index) => ({
       seatNumber: index + 1,
-      type: index < 40 ? "regular" : "flex",
+      type: index < 40 ? "regular" : "floater",
     }))
   );
 

@@ -42,7 +42,7 @@ const isWithinRegularWindow = (targetDate, now) => {
   return diff >= 0 && diff <= 14;
 };
 
-const isWithinFlexWindow = (targetDate, now) => {
+const isWithinFloaterWindow = (targetDate, now) => {
   const diff = getDayDiff(targetDate, now);
   return diff === 1;
 };
@@ -182,14 +182,14 @@ const BookingApp = () => {
       return "No booking on weekends.";
     }
 
-    const allowedType = isBatchDayForUser(user, target) ? "regular" : "flex";
+    const allowedType = isBatchDayForUser(user, target) ? "regular" : "floater";
 
     if (allowedType === "regular" && !isWithinRegularWindow(target, now)) {
       return "Regular seats can be booked from today up to 14 days ahead.";
     }
 
-    if (allowedType === "flex" && !isWithinFlexWindow(target, now)) {
-      return "Flex seats can be booked for tomorrow only.";
+    if (allowedType === "floater" && !isWithinFloaterWindow(target, now)) {
+      return "Floater seats can be booked for tomorrow only.";
     }
 
     return `Booking window is open for ${allowedType} seats.`;
@@ -295,7 +295,7 @@ const BookingApp = () => {
                     <div className="flex items-center justify-between">
                       <span className="text-lg font-semibold">Seat {seat.seatNumber}</span>
                       <span className="rounded-full bg-slate-900 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-100">
-                        {seat.type === "flex" ? "Flex" : "Regular"}
+                        {seat.type === "floater" ? "Floater" : "Regular"}
                       </span>
                     </div>
                     <p className="mt-2 text-xs text-slate-500">

@@ -111,7 +111,7 @@ router.delete("/:id", async (req, res, next) => {
     if (seat && seat.type === "regular") {
       await SeatOverride.updateOne(
         { seat: seat._id, date: booking.date },
-        { $set: { type: "flex" } },
+        { $set: { type: "floater" } },
         { upsert: true }
       );
     }

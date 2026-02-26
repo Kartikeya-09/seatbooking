@@ -105,7 +105,7 @@ const UserProfile = () => {
             </p>
             <h2 className="mt-4 text-2xl font-semibold">Your seat access</h2>
             <p className="mt-3 text-sm text-amber-200">
-              Regular seats are available on your batch days. Flex seats are
+              Regular seats are available on your batch days. Floater seats are
               available on the other weekdays for tomorrow only.
             </p>
             <div className="mt-6 space-y-3 text-sm">
@@ -114,7 +114,7 @@ const UserProfile = () => {
                 <p className="text-lg font-semibold">Book today up to 14 days ahead</p>
               </div>
               <div className="rounded-2xl border border-amber-200/20 bg-white/5 px-4 py-3">
-                <p className="text-xs uppercase tracking-wide text-amber-200">Flex seats</p>
+                <p className="text-xs uppercase tracking-wide text-amber-200">Floater seats</p>
                 <p className="text-lg font-semibold">Tomorrow only, weekdays</p>
               </div>
               <div className="rounded-2xl border border-amber-200/20 bg-white/5 px-4 py-3">

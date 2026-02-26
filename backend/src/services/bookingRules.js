@@ -46,13 +46,13 @@ const isWithinRegularWindow = (targetDate, now = new Date()) => {
   return diff >= 0 && diff <= 14;
 };
 
-const isWithinFlexWindow = (targetDate, now = new Date()) => {
+const isWithinFloaterWindow = (targetDate, now = new Date()) => {
   const diff = getDayDiff(targetDate, now);
   return diff === 1;
 };
 
 const getAllowedSeatType = (user, date) => {
-  return isBatchDayForUser(user, date) ? "regular" : "flex";
+  return isBatchDayForUser(user, date) ? "regular" : "floater";
 };
 
 const canBookSeatType = (seatType, targetDate, now = new Date()) => {
@@ -60,8 +60,8 @@ const canBookSeatType = (seatType, targetDate, now = new Date()) => {
     return isWithinRegularWindow(targetDate, now);
   }
 
-  if (seatType === "flex") {
-    return isWithinFlexWindow(targetDate, now);
+  if (seatType === "floater") {
+    return isWithinFloaterWindow(targetDate, now);
   }
 
   return false;

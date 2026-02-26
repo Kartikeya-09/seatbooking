@@ -96,7 +96,7 @@ const Login = () => {
             </p>
             <h3 className="mt-4 text-2xl font-semibold">Seat availability signals</h3>
             <p className="mt-3 text-sm text-amber-200">
-              We calculate the right seats for your batch and show flex windows
+              We calculate the right seats for your batch and show floater windows
               instantly.
             </p>
             <div className="mt-6 space-y-3 text-sm">
