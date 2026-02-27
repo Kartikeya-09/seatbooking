@@ -6,6 +6,30 @@
 	color-scheme: light;
 	text-rendering: optimizeLegibility;
 	--serif: "Fraunces", serif;
+	--page-bg: radial-gradient(circle at 20% 20%, rgba(251, 191, 36, 0.25), transparent 42%),
+		radial-gradient(circle at 85% 10%, rgba(14, 116, 144, 0.2), transparent 35%),
+		linear-gradient(120deg, #fff7ed, #f8fafc 45%, #fff1f2 100%);
+	--page-text: #0f172a;
+	--panel-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 248, 235, 0.85));
+	--panel-border: #e2e8f0;
+	--panel-text: #0f172a;
+	--panel-muted: #64748b;
+	--panel-box-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(244, 249, 255, 0.9));
+	--panel-box-border: #e2e8f0;
+}
+
+html.dark {
+	color-scheme: dark;
+	--page-bg: radial-gradient(circle at 20% 20%, rgba(14, 116, 144, 0.25), transparent 42%),
+		radial-gradient(circle at 85% 10%, rgba(251, 191, 36, 0.2), transparent 35%),
+		linear-gradient(120deg, #0f172a, #111827 45%, #020617 100%);
+	--page-text: #e2e8f0;
+	--panel-bg: rgba(2, 6, 23, 0.85);
+	--panel-border: #334155;
+	--panel-text: #f8fafc;
+	--panel-muted: #94a3b8;
+	--panel-box-bg: rgba(15, 23, 42, 0.8);
+	--panel-box-border: rgba(148, 163, 184, 0.25);
 }
 
 * {
@@ -15,6 +39,16 @@
 body {
 	margin: 0;
 	background: #f5efe6;
+}
+
+html.dark body {
+	background: #0b1120;
+}
+
+.page-shell {
+	min-height: 100vh;
+	background: var(--page-bg);
+	color: var(--page-text);
 }
 
 h1,

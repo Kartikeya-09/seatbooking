@@ -1,0 +1,10 @@
+
+1) Modify the hover interaction so that when a user hovers over any booked seat card (not just the “Book” text), a tooltip appears displaying the name of the user who booked the seat.
+
+
+2) When hovering over any booked seat (whether Regular or Floater), display a tooltip containing: User Name
+
+
+3) When a user who has already booked a seat attempts to book another seat, display a clear and user-friendly error message.
+The message should read:
+“You have already booked a seat. Multiple bookings are not allowed.”

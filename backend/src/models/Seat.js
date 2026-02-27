@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const seatSchema = new mongoose.Schema(
   {
     seatNumber: { type: Number, required: true, unique: true },
-    type: { type: String, enum: ["regular", "floater"], required: true },
+    type: { type: String, enum: ["regular", "flex"], required: true },
   },
   { timestamps: true }
 );

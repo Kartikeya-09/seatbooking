@@ -20,6 +20,8 @@ router.get("/", async (req, res, next) => {
   try {
     const { date } = req.query;
     const seats = await Seat.find().sort({ seatNumber: 1 });
+    const normalizeType = (value) =>
+      value === "floater" || value === "flatter" ? "flex" : value;
 
     if (!date) {
       return res.json(seats);
@@ -35,11 +37,21 @@ router.get("/", async (req, res, next) => {
       return res.json(result);
     }
 
-    const bookings = await Booking.find({ date }).select("seat");
+    const bookings = await Booking.find({ date })
+      .select("seat user")
+      .populate("user", "name username");
     const bookedSeatIds = new Set(bookings.map((booking) => booking.seat.toString()));
+    const bookedByMap = new Map(
+      bookings.map((booking) => [
+        booking.seat.toString(),
+        booking.user
+          ? { name: booking.user.name, username: booking.user.username }
+          : null,
+      ])
+    );
     const overrides = await SeatOverride.find({ date }).select("seat type");
     const overrideMap = new Map(
-      overrides.map((override) => [override.seat.toString(), override.type])
+      overrides.map((override) => [override.seat.toString(), normalizeType(override.type)])
     );
 
     const user = await User.findById(req.user.id);
@@ -48,19 +60,21 @@ router.get("/", async (req, res, next) => {
     }
 
     const allowedType = getAllowedSeatType(user, parsedDate);
-    const windowOpen = canBookSeatType(allowedType, parsedDate);
+    const windowOpen = canBookSeatType(allowedType, parsedDate, new Date());
 
     const result = seats.map((seat) => {
       const isBooked = bookedSeatIds.has(seat._id.toString());
+      const bookedBy = bookedByMap.get(seat._id.toString()) || null;
       const overrideType = overrideMap.get(seat._id.toString());
-      const effectiveType = overrideType || seat.type;
+      const effectiveType = overrideType || normalizeType(seat.type);
       const isAllowed = allowedType ? effectiveType === allowedType && windowOpen : true;
       return {
         ...seat.toObject(),
         type: effectiveType,
-        baseType: seat.type,
+        baseType: normalizeType(seat.type),
         isBooked,
         isAllowed,
+        bookedBy,
       };
     });
 

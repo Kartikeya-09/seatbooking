@@ -4,7 +4,7 @@ const seatOverrideSchema = new mongoose.Schema(
   {
     seat: { type: mongoose.Schema.Types.ObjectId, ref: "Seat", required: true },
     date: { type: String, required: true },
-    type: { type: String, enum: ["regular", "floater"], required: true },
+    type: { type: String, enum: ["regular", "flex"], required: true },
   },
   { timestamps: true }
 );

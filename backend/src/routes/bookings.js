@@ -43,6 +43,8 @@ router.get("/", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
   try {
     const { seatId, date } = req.body;
+    const normalizeType = (value) =>
+      value === "floater" || value === "flatter" ? "flex" : value;
 
     if (!seatId || !date) {
       return res.status(400).json({ message: "seatId and date are required" });
@@ -67,15 +69,20 @@ router.post("/", async (req, res, next) => {
     }
 
     const override = await SeatOverride.findOne({ seat: seatId, date });
-    const effectiveType = override ? override.type : seat.type;
+    const effectiveType = override ? normalizeType(override.type) : normalizeType(seat.type);
 
     const allowedType = getAllowedSeatType(user, parsedDate);
     if (effectiveType !== allowedType) {
       return res.status(400).json({ message: `Seat not allowed for ${date}` });
     }
 
-    if (!canBookSeatType(seat.type, parsedDate)) {
+    if (!canBookSeatType(effectiveType, parsedDate, new Date())) {
       return res.status(400).json({ message: "Booking window is closed" });
+    }
+
+    const existingBooking = await Booking.findOne({ user: req.user.id, date });
+    if (existingBooking) {
+      return res.status(409).json({ message: "You already booked a seat for this date" });
     }
 
     const booking = await Booking.create({
@@ -111,7 +118,7 @@ router.delete("/:id", async (req, res, next) => {
     if (seat && seat.type === "regular") {
       await SeatOverride.updateOne(
         { seat: seat._id, date: booking.date },
-        { $set: { type: "floater" } },
+        { $set: { type: "flex" } },
         { upsert: true }
       );
     }

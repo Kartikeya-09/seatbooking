@@ -46,13 +46,28 @@ const isWithinRegularWindow = (targetDate, now = new Date()) => {
   return diff >= 0 && diff <= 14;
 };
 
-const isWithinFloaterWindow = (targetDate, now = new Date()) => {
-  const diff = getDayDiff(targetDate, now);
-  return diff === 1;
+const getNextBusinessDay = (now = new Date()) => {
+  const next = new Date(now);
+  next.setDate(next.getDate() + 1);
+  while (!isBusinessDay(next)) {
+    next.setDate(next.getDate() + 1);
+  }
+  return getDateOnly(next);
+};
+
+const isAfterFloaterStart = (now = new Date()) => {
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  return hours > 11 || (hours === 11 && minutes >= 0);
+};
+
+const isWithinFlexWindow = (targetDate, now = new Date()) => {
+  const nextBusinessDay = getNextBusinessDay(now).getTime();
+  return getDateOnly(targetDate).getTime() === nextBusinessDay;
 };
 
 const getAllowedSeatType = (user, date) => {
-  return isBatchDayForUser(user, date) ? "regular" : "floater";
+  return isBatchDayForUser(user, date) ? "regular" : "flex";
 };
 
 const canBookSeatType = (seatType, targetDate, now = new Date()) => {
@@ -60,8 +75,8 @@ const canBookSeatType = (seatType, targetDate, now = new Date()) => {
     return isWithinRegularWindow(targetDate, now);
   }
 
-  if (seatType === "floater") {
-    return isWithinFloaterWindow(targetDate, now);
+  if (seatType === "flex") {
+    return isWithinFlexWindow(targetDate, now) && isAfterFloaterStart(now);
   }
 
   return false;
