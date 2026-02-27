@@ -34,8 +34,35 @@ const Landing = () => {
           </div>
         </header>
 
-        <section className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="rounded-3xl border p-8 shadow-xl bg-[color:var(--panel-bg)] border-[color:var(--panel-border)] text-[color:var(--panel-text)]">
+        <nav className="sticky top-4 z-20 mb-10 flex flex-wrap gap-3 rounded-3xl border px-4 py-3 shadow-sm backdrop-blur bg-[color:var(--panel-box-bg)] border-[color:var(--panel-box-border)]">
+          {[
+            { label: "Overview", href: "#overview" },
+            { label: "Highlights", href: "#highlights" },
+          ].map((tab) => (
+            <a
+              key={tab.label}
+              className="flex-1 min-w-[120px] rounded-full border px-4 py-2 text-center text-xs font-semibold uppercase tracking-[0.2em] shadow-sm transition hover:-translate-y-0.5 border-[color:var(--panel-border)] bg-[color:var(--panel-bg)] text-[color:var(--panel-text)]"
+              href={tab.href}
+            >
+              {tab.label}
+            </a>
+          ))}
+          <Link
+            to="/about"
+            className="flex-1 min-w-[120px] rounded-full border px-4 py-2 text-center text-xs font-semibold uppercase tracking-[0.2em] shadow-sm transition hover:-translate-y-0.5 border-[color:var(--panel-border)] bg-[color:var(--panel-bg)] text-[color:var(--panel-text)]"
+          >
+            About
+          </Link>
+          <Link
+            to="/policies"
+            className="flex-1 min-w-[120px] rounded-full border px-4 py-2 text-center text-xs font-semibold uppercase tracking-[0.2em] shadow-sm transition hover:-translate-y-0.5 border-[color:var(--panel-border)] bg-[color:var(--panel-bg)] text-[color:var(--panel-text)]"
+          >
+            Policies
+          </Link>
+        </nav>
+
+        <section id="overview" className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+          <div id="highlights" className="rounded-3xl border p-8 shadow-xl bg-[color:var(--panel-bg)] border-[color:var(--panel-border)] text-[color:var(--panel-text)]">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[color:var(--panel-muted)]">
               Daily seat intelligence
             </p>
@@ -66,7 +93,7 @@ const Landing = () => {
               ))}
             </div>
           </div>
-          <div className="rounded-3xl border p-8 shadow-xl bg-[color:var(--panel-bg)] border-[color:var(--panel-border)] text-[color:var(--panel-text)]">
+          <div id="rules" className="rounded-3xl border p-8 shadow-xl bg-[color:var(--panel-bg)] border-[color:var(--panel-border)] text-[color:var(--panel-text)]">
             <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[color:var(--panel-muted)]">
               Booking rules
             </p>
@@ -91,7 +118,7 @@ const Landing = () => {
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
-                className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-amber-100 shadow-lg transition hover:-translate-y-0.5 dark:bg-amber-200 dark:text-slate-900"
+                className="rounded-full border px-4 py-2 text-sm font-semibold shadow-lg transition hover:-translate-y-0.5 border-[color:var(--panel-border)] bg-[color:var(--panel-box-bg)] text-[color:var(--panel-text)]"
                 to="/login"
               >
                 Start booking
@@ -102,17 +129,32 @@ const Landing = () => {
               >
                 Create account
               </Link>
+              <Link
+                className="rounded-full border px-4 py-2 text-sm font-semibold shadow-sm transition hover:-translate-y-0.5 border-[color:var(--panel-border)] bg-[color:var(--panel-box-bg)] text-[color:var(--panel-text)]"
+                to="/about"
+              >
+                About
+              </Link>
+              <Link
+                className="rounded-full border px-4 py-2 text-sm font-semibold shadow-sm transition hover:-translate-y-0.5 border-[color:var(--panel-border)] bg-[color:var(--panel-box-bg)] text-[color:var(--panel-text)]"
+                to="/policies"
+              >
+                Policies
+              </Link>
             </div>
           </div>
         </section>
 
-        <section id="overview" className="mt-12">
+        <section id="steps" className="mt-12">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-semibold">How it works</h2>
             <span className="text-xs uppercase tracking-[0.3em] text-slate-500 dark:text-slate-400">
               3 steps
             </span>
           </div>
+          <p className="mt-3 text-sm text-[color:var(--panel-muted)]">
+            A clear, predictable flow keeps teams aligned and seats available.
+          </p>
           <div className="mt-6 grid gap-4 md:grid-cols-3">
             {[
               {
@@ -126,6 +168,14 @@ const Landing = () => {
               {
                 title: "Book or release",
                 body: "Reserve a seat or release it before the booking date.",
+              },
+              {
+                title: "Confirm your seat",
+                body: "See a booking confirmation and your seat status right away.",
+              },
+              {
+                title: "Release for others",
+                body: "Unlock a floater seat when you release ahead of time.",
               },
             ].map((step) => (
               <div
@@ -142,6 +192,42 @@ const Landing = () => {
             ))}
           </div>
         </section>
+
+        <footer className="mt-16 rounded-3xl border px-6 py-8 shadow-lg bg-[color:var(--panel-bg)] border-[color:var(--panel-border)] text-[color:var(--panel-text)]">
+          <div className="grid gap-6 md:grid-cols-[1.1fr_0.9fr]">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-[color:var(--panel-muted)]">
+                SeatFlow
+              </p>
+              <h3 className="mt-3 text-2xl font-semibold">Book smarter, every day</h3>
+              <p className="mt-2 text-sm text-[color:var(--panel-muted)]">
+                Built for squads and batches that need clarity. Book a seat, release
+                it early, and keep teams moving.
+              </p>
+              <p className="mt-4 text-sm font-semibold text-[color:var(--panel-text)]">
+                Contact: support@seatflow.local
+              </p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {[
+                { label: "Home", to: "/" },
+                { label: "About", to: "/about" },
+                { label: "Policies", to: "/policies" },
+                { label: "Open booking", to: "/login" },
+                { label: "Create account", to: "/signup" },
+                { label: "Booking app", to: "/app" },
+              ].map((link) => (
+                <Link
+                  key={link.label}
+                  className="rounded-2xl border px-4 py-3 text-sm font-semibold shadow-sm transition hover:-translate-y-0.5 border-[color:var(--panel-border)] bg-[color:var(--panel-box-bg)] text-[color:var(--panel-text)]"
+                  to={link.to}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
   );

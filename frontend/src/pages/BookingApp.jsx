@@ -70,6 +70,8 @@ const BookingApp = () => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [popup, setPopup] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -141,6 +143,35 @@ const BookingApp = () => {
     });
     return totals;
   }, [seats]);
+
+  const filteredSeats = useMemo(() => {
+    return seats.filter((seat) => {
+      const isMine = Boolean(bookingMap.get(seat._id));
+      const seatType = seat.type === "flex" ? "floater" : seat.type;
+
+      if (typeFilter !== "all" && seatType !== typeFilter) {
+        return false;
+      }
+
+      if (statusFilter === "available") {
+        return !seat.isBooked && seat.isAllowed;
+      }
+
+      if (statusFilter === "booked") {
+        return seat.isBooked;
+      }
+
+      if (statusFilter === "mine") {
+        return isMine;
+      }
+
+      if (statusFilter === "locked") {
+        return !seat.isBooked && !seat.isAllowed;
+      }
+
+      return true;
+    });
+  }, [seats, bookingMap, statusFilter, typeFilter]);
 
   const handleBooking = async (seat) => {
     if (!user || !date || seat.isBooked || !seat.isAllowed) {
@@ -233,7 +264,7 @@ const BookingApp = () => {
           </div>
         </div>
       ) : null}
-      <div className="mx-auto max-w-6xl px-6 py-8">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
         <header className="flex flex-wrap items-center justify-between gap-4 pb-8">
           <div className="flex items-center gap-3">
             <div className="grid h-10 w-10 place-items-center rounded-xl bg-slate-900 text-sm font-bold text-amber-100 dark:bg-amber-100 dark:text-slate-900">
@@ -263,8 +294,8 @@ const BookingApp = () => {
           </div>
         </header>
 
-        <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
-          <aside className="rounded-3xl border p-6 shadow-xl bg-[color:var(--panel-bg)] border-[color:var(--panel-border)] text-[color:var(--panel-text)]">
+        <div className="grid gap-8 lg:grid-cols-[340px_1fr]">
+          <aside className="rounded-3xl border p-6 shadow-xl bg-[color:var(--panel-bg)] border-[color:var(--panel-border)] text-[color:var(--panel-text)] lg:sticky lg:top-24 lg:self-start">
             <h2 className="text-xl font-semibold">Book a seat</h2>
             <p className="mt-2 text-sm text-[color:var(--panel-muted)]">
               Signed in as <span className="font-semibold">{user ? user.name : "..."}</span>
@@ -310,14 +341,74 @@ const BookingApp = () => {
           </aside>
 
           <section className="rounded-3xl border p-6 shadow-xl bg-[color:var(--panel-bg)] border-[color:var(--panel-border)] text-[color:var(--panel-text)]">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-5">
               <h2 className="text-xl font-semibold">Choose a seat</h2>
-              <span className="text-xs uppercase tracking-[0.3em] text-[color:var(--panel-muted)]">
-                {date}
-              </span>
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="text-xs uppercase tracking-[0.3em] text-[color:var(--panel-muted)]">
+                  {date}
+                </span>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { label: "All", value: "all" },
+                    { label: "Available", value: "available" },
+                    { label: "Booked", value: "booked" },
+                    { label: "Mine", value: "mine" },
+                    { label: "Locked", value: "locked" },
+                  ].map((item) => (
+                    <button
+                      key={item.value}
+                      type="button"
+                      onClick={() => setStatusFilter(item.value)}
+                      className={`rounded-full border px-3 py-1 text-xs font-semibold transition hover:-translate-y-0.5 border-[color:var(--panel-box-border)] ${
+                        statusFilter === item.value
+                          ? "bg-slate-900 text-amber-100"
+                          : "bg-[color:var(--panel-box-bg)] text-[color:var(--panel-text)]"
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
-            <div className="mt-6 grid gap-3 sm:grid-cols-3 lg:grid-cols-5">
-              {seats.map((seat) => {
+            <div className="mt-5 flex flex-wrap items-center justify-between gap-4 text-xs text-[color:var(--panel-muted)]">
+              <div className="flex flex-wrap items-center gap-3">
+                {[
+                  { label: "Available", color: "bg-emerald-500" },
+                  { label: "Booked", color: "bg-rose-500" },
+                  { label: "Yours", color: "bg-amber-500" },
+                  { label: "Locked", color: "bg-slate-400" },
+                ].map((item) => (
+                  <span key={item.label} className="flex items-center gap-2">
+                    <span className={`h-2 w-2 rounded-full ${item.color}`} />
+                    {item.label}
+                  </span>
+                ))}
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs uppercase tracking-[0.2em]">Type</span>
+                {[
+                  { label: "All", value: "all" },
+                  { label: "Regular", value: "regular" },
+                  { label: "Floater", value: "floater" },
+                ].map((item) => (
+                  <button
+                    key={item.value}
+                    type="button"
+                    onClick={() => setTypeFilter(item.value)}
+                    className={`rounded-full border px-3 py-1 text-xs font-semibold transition hover:-translate-y-0.5 border-[color:var(--panel-box-border)] ${
+                      typeFilter === item.value
+                        ? "bg-slate-900 text-amber-100"
+                        : "bg-[color:var(--panel-box-bg)] text-[color:var(--panel-text)]"
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="mt-6 grid gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+              {filteredSeats.map((seat) => {
                 const booking = bookingMap.get(seat._id);
                 const isMine = Boolean(booking);
                 const bookedByName = seat.bookedBy
@@ -327,7 +418,7 @@ const BookingApp = () => {
                   ? getDayDiff(new Date(`${date}T00:00:00`), new Date()) > 0
                   : false;
                 const baseClasses =
-                  "group relative rounded-2xl border px-3 py-3 text-left text-sm transition";
+                  "group relative rounded-2xl border px-4 py-5 text-left text-sm transition";
                 const stateClasses = seat.isBooked
                   ? isMine
                     ? "border-amber-300 bg-amber-50 dark:border-amber-400/40 dark:bg-amber-400/10"
@@ -353,6 +444,17 @@ const BookingApp = () => {
                           ? "Available now"
                           : "Outside booking window"}
                     </p>
+                    <div className="mt-3 flex items-center gap-2">
+                      <span
+                        className={`h-2 w-2 rounded-full ${
+                          seat.isBooked ? (isMine ? "bg-amber-500" : "bg-rose-500") :
+                          seat.isAllowed ? "bg-emerald-500" : "bg-slate-400"
+                        }`}
+                      />
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[color:var(--panel-muted)]">
+                        {seat.isBooked ? (isMine ? "Yours" : "Booked") : seat.isAllowed ? "Available" : "Locked"}
+                      </span>
+                    </div>
                     {seat.isBooked && bookedByName ? (
                       <div className="mt-2 opacity-0 transition group-hover:opacity-100">
                         <span className="inline-flex rounded-full border px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] border-[color:var(--panel-box-border)] bg-[color:var(--panel-box-bg)] text-[color:var(--panel-text)]">
